@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatAPI.Models
@@ -13,6 +14,7 @@ namespace ChatAPI.Models
         [Required]
         public string Email { get; set; }
         [Required]
+        [JsonIgnore]
         public string Password { get; set; }
         [Required]
         public string role { get; set; } = "user";
