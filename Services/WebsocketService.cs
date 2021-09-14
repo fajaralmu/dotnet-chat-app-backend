@@ -23,13 +23,17 @@ namespace ChatAPI.Services
             _socketConnections.Remove(handler);
         }
 
-        public void SendToAll(string message)
+        public void SendToAll(string topic, object message)
         { 
-            Console.WriteLine("SendToAll: "+message);
+            Console.WriteLine($"SendTo `{topic}`: "+message);
             foreach (WebSocketHandler handler in  _socketConnections)
             {
+                if (handler.HasTopic(topic) == false) 
+                    continue;
                 Console.WriteLine($"SendTo {handler.ID} :"+message);
-                handler.SendMessage(message);
+                 
+                handler.SendMessage(topic, message.ToString());
+                
             }
         }
     }

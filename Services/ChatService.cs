@@ -34,7 +34,7 @@ namespace ChatAPI.Services
                 ToUser = toUser,
                 Body = messageDto.Body
             };
-            _websocketService.SendToAll("Server chat: "+message.Body);
+            _websocketService.SendToAll("chat/"+toUser.ID, message);
             return Add(message);
         }
 
