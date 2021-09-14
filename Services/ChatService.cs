@@ -1,25 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using ChatAPI.Context;
 using ChatAPI.Dto;
 using ChatAPI.Helper;
 using ChatAPI.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatAPI.Services
 {
     public class ChatService : BaseMasterDataService<ChatMessage>
     {
-        public static IEqualityComparer<User> CreateEqualityComparer<User>(
-            
-            Func<User, int> getHashCode, 
-            Func<User, User, bool> equals
-            ){
-            return new DelegatedEqualityComparer<User>(getHashCode, equals);
-        }
+       
         public ChatService(ChatAppContext context) : base(context)
         {
 
@@ -67,9 +59,10 @@ namespace ChatAPI.Services
         }
         public List<ChatMessage> GetByFromUserID(int fromUserID, User user)
         {
-            return GetQuery(chat =>
-                            (chat.FromUser.ID == fromUserID && chat.ToUser.ID == user.ID) ||
-                            (chat.FromUser.ID == user.ID && chat.ToUser.ID == fromUserID))
+            return GetQuery (chat =>
+                                (chat.FromUser.ID == fromUserID && chat.ToUser.ID == user.ID) ||
+                                (chat.FromUser.ID == user.ID && chat.ToUser.ID == fromUserID)
+                            )
                             .OrderBy(chat => chat.CreatedDate)
                             .Include(chat => chat.FromUser)
                             .Include(chat => chat.ToUser)

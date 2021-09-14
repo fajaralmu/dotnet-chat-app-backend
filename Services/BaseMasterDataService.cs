@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ChatAPI.Context;
+using ChatAPI.Helper;
 using ChatAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,9 +13,10 @@ namespace ChatAPI.Services
     public abstract class BaseMasterDataService<T> where T : BaseModel
     {
         protected ChatAppContext _context;
-        protected abstract DbSet<T> Items {get;}
+        protected abstract DbSet<T> Items { get; }
 
-        public BaseMasterDataService(ChatAppContext context){
+        public BaseMasterDataService(ChatAppContext context)
+        {
             _context = context;
         }
 
@@ -37,7 +39,8 @@ namespace ChatAPI.Services
         public T Delete(int id, Expression<Func<T, bool>> where = null)
         {
             IQueryable<T> queryable = Items.Where(m => m.ID == id);
-            if (where != null){
+            if (where != null)
+            {
                 queryable.Where(where);
             }
             T model = queryable.FirstOrDefault();
@@ -51,6 +54,14 @@ namespace ChatAPI.Services
         public T Read(int id)
         {
             return Items.Where(model => model.ID == id).FirstOrDefault();
+        }
+
+        protected static IEqualityComparer<CT> CreateEqualityComparer<CT>(
+           Func<CT, int> getHashCode,
+           Func<CT, CT, bool> equals
+           )
+        {
+            return new DelegatedEqualityComparer<CT>(getHashCode, equals);
         }
     }
 }
