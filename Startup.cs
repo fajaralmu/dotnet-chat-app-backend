@@ -47,9 +47,10 @@ namespace ChatAPI
                     (optionsAction => optionsAction.UseNpgsql(connectionString));
 
             //Services
-            services.AddScoped<UserService, UserService>();
-            services.AddScoped<SettingService, SettingService>();
-            services.AddScoped<ChatService, ChatService>();
+            services.AddSingleton<UserService, UserService>();
+            services.AddSingleton<SettingService, SettingService>();
+            services.AddSingleton<ChatService, ChatService>();
+            services.AddSingleton<WebsocketService, WebsocketService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

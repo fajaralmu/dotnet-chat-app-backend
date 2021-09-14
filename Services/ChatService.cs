@@ -11,10 +11,10 @@ namespace ChatAPI.Services
 {
     public class ChatService : BaseMasterDataService<ChatMessage>
     {
-       
-        public ChatService(ChatAppContext context) : base(context)
+        WebsocketService _websocketService;
+        public ChatService(ChatAppContext context, WebsocketService websocketService) : base(context)
         {
-
+            _websocketService = websocketService;
         }
 
         public ChatMessage SendDirectChat(ChatMessageDto messageDto, User user)
@@ -34,6 +34,7 @@ namespace ChatAPI.Services
                 ToUser = toUser,
                 Body = messageDto.Body
             };
+            _websocketService.SendToAll("Server chat: "+message.Body);
             return Add(message);
         }
 

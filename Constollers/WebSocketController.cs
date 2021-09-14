@@ -1,18 +1,22 @@
 using System;
 using System.Net;
-using System.Net.WebSockets;
-using System.Threading;
+using System.Net.WebSockets; 
 using System.Threading.Tasks;
+using ChatAPI.Middlewares;
+using ChatAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatAPI.Constollers
 {
-    public class WebSocketController : ControllerBase
+    public class WebSocketController :ControllerBase
     {
+        private WebsocketService _websocketService;
+        
         int id = new Random().Next(100);
-        public WebSocketController(){
+        public WebSocketController(WebsocketService websocketService){
             Console.WriteLine("WebSocketController ======= "+id);
+            _websocketService = websocketService;
         }
         [HttpGet("/ws")]
         public async Task Get()
@@ -21,7 +25,9 @@ namespace ChatAPI.Constollers
             {
                 using WebSocket webSocket = await
                                    HttpContext.WebSockets.AcceptWebSocketAsync();
-                await Echo(HttpContext, webSocket);
+                WebSocketHandler handler = new WebSocketHandler(webSocket, id);
+                _websocketService.AddConnection(handler);
+                await handler.Echo();
             }
             else
             {
@@ -29,19 +35,6 @@ namespace ChatAPI.Constollers
             }
         }
 
-        private async Task Echo(HttpContext context, WebSocket webSocket)
-        {
-            Console.WriteLine(id+":: Echo WS:" + context.Request.Path);
-            var buffer = new byte[1024 * 4];
-            WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            while (!result.CloseStatus.HasValue)
-            {
-                await webSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
-
-                result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), 
-                    CancellationToken.None);
-            }
-            await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
-        }
+        
     }
 }
