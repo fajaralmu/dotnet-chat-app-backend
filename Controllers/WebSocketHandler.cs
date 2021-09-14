@@ -62,7 +62,7 @@ namespace ChatAPI.Controllers
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
-            string jsonString = JsonSerializer.Serialize(message, options);
+            string jsonString = JsonSerializer.Serialize(payload, options);
             var bytes = Encoding.Default.GetBytes(jsonString);
             var arraySegment = new ArraySegment<byte>(bytes);
             webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
