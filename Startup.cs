@@ -1,21 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
+using ChatAPI.Context;
+using ChatAPI.Middlewares;
 using ChatAPI.Models;
 using ChatAPI.Services;
-using ChatAPI.Context;
-using System.Text.Json.Serialization;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
-using ChatAPI.Middlewares;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebSockets;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace ChatAPI
 {
@@ -32,18 +33,18 @@ namespace ChatAPI
         public void ConfigureServices(IServiceCollection services)
         {
             string connectionString = Configuration["Data:ChatAPIConnection:ConnectionStrings:DefaultConnection"];
-            Console.WriteLine("===============Conn String: "+connectionString);
-            services.AddMvc(options => 
+            Console.WriteLine("===============Conn String: " + connectionString);
+            services.AddMvc(options =>
                         options.EnableEndpointRouting = false
                     )
-                    .AddJsonOptions(options => 
+                    .AddJsonOptions(options =>
                         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
                     )
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
+
             //DB Context
             services.AddDbContext<ChatAppContext>
-                    (optionsAction=>optionsAction.UseNpgsql(connectionString)); 
+                    (optionsAction => optionsAction.UseNpgsql(connectionString));
 
             //Services
             services.AddScoped<UserService, UserService>();
@@ -54,6 +55,12 @@ namespace ChatAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var webSocketOptions = new WebSocketOptions()
+            {
+                KeepAliveInterval = TimeSpan.FromSeconds(120),
+            };
+            webSocketOptions.AllowedOrigins.Add("http://localhost:4200");
+            app.UseWebSockets(webSocketOptions); //WebSocketMiddleware
             app.UseMiddleware<CustomFilterMiddleware>();
             app.UseMiddleware<JwtMiddleware>();
             // if (env.IsDevelopment())
@@ -62,11 +69,11 @@ namespace ChatAPI
             // }
             // else
             // {
-                app.UseExceptionHandler("/error");
+            app.UseExceptionHandler("/error");
             // }
 
-             app.UseMvc(); 
+            app.UseMvc();
         }
     }
- 
+
 }
