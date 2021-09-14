@@ -22,12 +22,12 @@ namespace ChatAPI.Constollers
         {
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
-                //using WebSocket webSocket = await
-                //                   HttpContext.WebSockets.AcceptWebSocketAsync();
-                //var handler = new ChatAPI.Controllers.WebSocketHandler(webSocket, id);
-                //handler.SetTopic(topics.Split(","));
-                //_websocketService.AddConnection(handler);
-                //await handler.Echo();
+                using WebSocket webSocket = await
+                                  HttpContext.WebSockets.AcceptWebSocketAsync();
+                var handler = new ChatAPI.Controllers.WebSocketHandler(webSocket, id);
+                handler.SetTopic(topics.Split(","));
+                _websocketService.AddConnection(handler);
+                await handler.Echo();
             }
             else
             {

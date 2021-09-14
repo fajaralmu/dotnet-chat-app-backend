@@ -1,10 +1,10 @@
 using System;
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ChatAPI.Dto;
-using Newtonsoft.Json;
 
 namespace ChatAPI.Controllers
 {
@@ -58,11 +58,12 @@ namespace ChatAPI.Controllers
             WebSocketMessage<object> payload = new WebSocketMessage<object>();
             payload.topic = topic;
             payload.data = message is string ? message.ToString() :(message);
-            //JsonConvert.DefaultSettings = () => new JsonSerializerSettings
-            //{
-            //    ContractResolver = new CamelCasePropertyNamesContractResolver()
-            //};
-            var bytes = Encoding.Default.GetBytes(JsonConvert.SerializeObject(payload));
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            };
+            string jsonString = JsonSerializer.Serialize(message, options);
+            var bytes = Encoding.Default.GetBytes(jsonString);
             var arraySegment = new ArraySegment<byte>(bytes);
             webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
         }
