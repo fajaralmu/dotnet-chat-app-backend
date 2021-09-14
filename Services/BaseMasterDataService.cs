@@ -29,6 +29,10 @@ namespace ChatAPI.Services
         {
             return Items.Where(where).ToList();
         }
+        protected IQueryable<T> GetQuery(Expression<Func<T, bool>> where)
+        {
+            return Items.Where(where);
+        }
 
         public T Delete(int id, Expression<Func<T, bool>> where = null)
         {

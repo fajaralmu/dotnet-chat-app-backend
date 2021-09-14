@@ -33,12 +33,12 @@ namespace ChatAPI.Constollers
             return CommonJson("success");
         }
 
-        [Authorize]
-        [HttpGet, Route("profile")]
-        public ActionResult<WebResponse<User>> Profile()
+       
+
+        [HttpPost, Route("register")]
+        public ActionResult<WebResponse<User>> Register([FromForm]IFormCollection value)
         {
-            User user = (User) HttpContext.Items["User"];
-            return CommonJson(user);
+            return CommonJson(_userService.Register(value));
         }
     }
 }

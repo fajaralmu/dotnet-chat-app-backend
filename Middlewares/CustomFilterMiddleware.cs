@@ -31,7 +31,7 @@ namespace ChatAPI.Middlewares
 
         }
 
-        private void PopulateResponseForCors(HttpResponse response)
+        public static void PopulateResponseForCors(HttpResponse response)
         {
             response.Headers.Add("Access-Control-Allow-Origin", "*");
             response.Headers.Add("Access-Control-Expose-Headers", "access-token, requestid");

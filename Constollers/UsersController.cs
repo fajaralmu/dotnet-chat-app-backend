@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ChatAPI.Constollers;
 using ChatAPI.Dto;
+using ChatAPI.Helper;
 using ChatAPI.Models;
 using ChatAPI.Services;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ChatAPI.Controllers
 {
-    [Route("api/user")]
+
+    [Authorize]
     [ApiController]
     public class UsersController : BaseController
     {
@@ -18,16 +20,17 @@ namespace ChatAPI.Controllers
         {
             _userService = userService;
         }
-        [HttpGet]
-        public ActionResult<WebResponse<IEnumerable<User>>> Index()
+        [HttpGet, Route("api/user/{id}")]
+        public ActionResult<WebResponse<User>> Read(int id)
         {
-            return CommonJson(_userService.getUsers());
+            return CommonJson(_userService.Read(id));
         }
-        [HttpPost]
-        [Route("register")]
-        public ActionResult<WebResponse<User>> Register([FromForm]IFormCollection value)
+
+        [HttpGet, Route("api/user/profile")]
+        public ActionResult<WebResponse<User>> Profile()
         {
-            return CommonJson(_userService.Register(value));
+            User user = (User)HttpContext.Items["User"];
+            return CommonJson(user);
         }
 
     }

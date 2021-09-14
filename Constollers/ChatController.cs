@@ -25,27 +25,31 @@ namespace ChatAPI.Controllers
             return CommonJson(_chatService.Read(id));
         }
 
-        [HttpGet, Route("api/chat/{roomID}")]
+        /////////////////// group ///////////////
+
+        [HttpGet, Route("api/chat/room/{roomID}")]
         public ActionResult<WebResponse<List<ChatMessage>>> GetRoomChat(int roomID)
         {
             return CommonJson(_chatService.GetByRoomID(roomID));
         }
         [HttpPost]
         [Route("api/chat/room")]
-        public ActionResult<WebResponse<ChatMessage>> SendGroup(ChatMessage message)
+        public ActionResult<WebResponse<ChatMessage>> SendGroup(ChatMessageDto message)
         {
             return CommonJson(_chatService.SendGroupChat(message, GetLoggedUser()));
         }
 
-        [HttpGet, Route("api/chat/direct/{toUserID}")]
-        public ActionResult<WebResponse<List<ChatMessage>>> GetDirectChat(int toUserID)
+        //////////////// direct //////////////////
+
+        [HttpGet, Route("api/chat/direct/{fromUserID}")]
+        public ActionResult<WebResponse<List<ChatMessage>>> GetDirectChat(int fromUserID)
         {
-            return CommonJson(_chatService.GetByToUserID(toUserID, GetLoggedUser()));
+            return CommonJson(_chatService.GetByFromUserID(fromUserID, GetLoggedUser()));
         }
 
         [HttpPost]
         [Route("api/chat/direct")]
-        public ActionResult<WebResponse<ChatMessage>> SendDirect(ChatMessage message)
+        public ActionResult<WebResponse<ChatMessage>> SendDirect(ChatMessageDto message)
         {
             return CommonJson(_chatService.SendDirectChat(message, GetLoggedUser()));
         }
@@ -54,6 +58,11 @@ namespace ChatAPI.Controllers
         public ActionResult<WebResponse<ChatMessage>> Delete(int id)
         {
             return CommonJson(_chatService.Delete(id, GetLoggedUser()));
+        }
+        [HttpGet, Route("api/chat/partners")]
+        public ActionResult<WebResponse<List<User>>> GetPartners()
+        {
+            return CommonJson(_chatService.GetPartners(GetLoggedUser()));
         }
 
     }

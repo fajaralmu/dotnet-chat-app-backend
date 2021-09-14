@@ -1,5 +1,6 @@
 using System;
 using ChatAPI.Dto;
+using ChatAPI.Middlewares;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -21,9 +22,10 @@ namespace ChatAPI.Constollers
             }
 
             var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            
+            CustomFilterMiddleware.PopulateResponseForCors(HttpContext.Response);
             HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            return 
-            Json(WebResponse<string>.ErrorResponse(context.Error));
+            return  Json(WebResponse<string>.ErrorResponse(context.Error));
             // Problem(
             //     type: context.Error.GetType().Name,
             //     detail: context.Error.StackTrace,

@@ -3,15 +3,17 @@ using System;
 using ChatAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ChatAPI.Migrations
 {
     [DbContext(typeof(ChatAppContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20210914053746_fixing")]
+    partial class fixing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,11 +76,11 @@ namespace ChatAPI.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("user_id");
 
-                    b.Property<int?>("RoomID")
+                    b.Property<int>("RoomID")
                         .HasColumnType("integer")
                         .HasColumnName("chat_room_id");
 
-                    b.Property<int?>("ToUserID")
+                    b.Property<int>("ToUserID")
                         .HasColumnType("integer")
                         .HasColumnName("to_user_id");
 
@@ -189,11 +191,15 @@ namespace ChatAPI.Migrations
 
                     b.HasOne("ChatAPI.Models.ChatRoom", "Room")
                         .WithMany()
-                        .HasForeignKey("RoomID");
+                        .HasForeignKey("RoomID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ChatAPI.Models.User", "ToUser")
                         .WithMany()
-                        .HasForeignKey("ToUserID");
+                        .HasForeignKey("ToUserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("FromUser");
 
