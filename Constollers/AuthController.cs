@@ -27,6 +27,11 @@ namespace ChatAPI.Constollers
             Response.Headers.Add("access-token", result.Token);
             return CommonJson(result);
         }
+        [HttpPost, Route("logout")]
+        public ActionResult<WebResponse<string>> Logout()
+        {
+            return CommonJson("success");
+        }
 
         [Authorize]
         [HttpGet, Route("profile")]

@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChatAPI.Models
 {
     [Table("chat_room")]
+    [Index(nameof(Code), IsUnique = true)]
     public class ChatRoom:BaseModel
     { 
          [Column("code"), Required]

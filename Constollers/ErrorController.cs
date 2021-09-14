@@ -2,6 +2,7 @@ using System;
 using ChatAPI.Dto;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatAPI.Constollers
@@ -20,7 +21,7 @@ namespace ChatAPI.Constollers
             }
 
             var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
-
+            HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return 
             Json(WebResponse<string>.ErrorResponse(context.Error));
             // Problem(

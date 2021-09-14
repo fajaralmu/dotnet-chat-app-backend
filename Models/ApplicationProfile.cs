@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChatAPI.Models
 {
     [Table("application_profile")]
+    [Index(nameof(Code), IsUnique = true)]
     public class ApplicationProfile:BaseModel
     { 
          [Column("code"), Required]

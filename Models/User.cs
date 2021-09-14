@@ -7,6 +7,7 @@ namespace ChatAPI.Models
 {
     [Table("users")]
     [Index(nameof(Name), IsUnique = true)]
+    [Index(nameof(Email), IsUnique = true)]
     public class User : BaseModel
     {
         [Required, Column("name")]
