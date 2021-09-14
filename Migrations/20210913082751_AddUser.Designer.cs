@@ -9,8 +9,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ChatAPI.Migrations
 {
-    [DbContext(typeof(UserContext))]
-    [Migration("20210913062427_AddUser")]
+    [DbContext(typeof(ChatAppContext))]
+    [Migration("20210913082751_AddUser")]
     partial class AddUser
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,29 +26,36 @@ namespace ChatAPI.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_date");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("email");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("password");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("role");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("role")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_date");
 
                     b.HasKey("ID");
 

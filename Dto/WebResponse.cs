@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using ChatAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatAPI.Dto
@@ -11,6 +12,8 @@ namespace ChatAPI.Dto
         public int Success {get; set;} = 1;
         public string Message {get; set;}
         public T Result {get; set;}
+
+        public User User {get;set;}
 
         public static WebResponse<T>  SuccessResponse(T returnValue)
         {
@@ -23,8 +26,8 @@ namespace ChatAPI.Dto
         {
             WebResponse<string> response = new WebResponse<string>();
             response.Success = 0;
-            response.Message = exception.GetType().Name;
-            response.Result = exception.Message;
+            response.Message = $"[{exception.GetType().Name}] {exception.Message}";
+            response.Result = exception.StackTrace;
             return response;
         }
     }

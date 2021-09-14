@@ -12,24 +12,24 @@ namespace ChatAPI.Migrations
                 name: "users",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    email = table.Column<string>(type: "text", nullable: false),
+                    password = table.Column<string>(type: "text", nullable: false),
                     role = table.Column<string>(type: "text", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    created_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    updated_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_users", x => x.ID);
+                    table.PrimaryKey("PK_users", x => x.id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_Name",
+                name: "IX_users_name",
                 table: "users",
-                column: "Name",
+                column: "name",
                 unique: true);
         }
 

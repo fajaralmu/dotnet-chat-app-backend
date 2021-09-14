@@ -3,52 +3,23 @@ using System;
 using ChatAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ChatAPI.Migrations
 {
     [DbContext(typeof(ChatAppContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20210913085401_AddChatMessage")]
+    partial class AddChatMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-            modelBuilder.Entity("ChatAPI.Models.ApplicationProfile", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("code");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("created_date");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("updated_date");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("application_profile");
-                });
 
             modelBuilder.Entity("ChatAPI.Models.ChatMessage", b =>
                 {

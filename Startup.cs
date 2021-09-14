@@ -42,25 +42,28 @@ namespace ChatAPI
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
             //DB Context
-            services.AddDbContext<UserContext>
-                    (optionsAction=>optionsAction.UseNpgsql(connectionString));
+            services.AddDbContext<ChatAppContext>
+                    (optionsAction=>optionsAction.UseNpgsql(connectionString)); 
 
             //Services
             services.AddScoped<UserService, UserService>();
+            services.AddScoped<SettingService, SettingService>();
+            services.AddScoped<ChatService, ChatService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<CustomFilterMiddleware>();
-            if (env.IsDevelopment())
-            {
-                app.UseExceptionHandler("/error-local-development");
-            }
-            else
-            {
+            app.UseMiddleware<JwtMiddleware>();
+            // if (env.IsDevelopment())
+            // {
+            //     app.UseExceptionHandler("/error-local-development");
+            // }
+            // else
+            // {
                 app.UseExceptionHandler("/error");
-            }
+            // }
 
              app.UseMvc(); 
         }

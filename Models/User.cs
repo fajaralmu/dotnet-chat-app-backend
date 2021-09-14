@@ -9,15 +9,17 @@ namespace ChatAPI.Models
     [Index(nameof(Name), IsUnique = true)]
     public class User : BaseModel
     {
-        [Required]
+        [Required, Column("name")]
         public string Name { get; set; }
-        [Required]
+        [Required, Column("email")]
         public string Email { get; set; }
-        [Required]
-        [JsonIgnore]
+        [Required, Column("password"), JsonIgnore]
         public string Password { get; set; }
-        [Required]
-        public string role { get; set; } = "user";
+        [Required, Column("role")]
+        public string Role { get; set; } = "user";
+
+        [NotMapped]
+        public string Token {get;set;}
 
     }
 }

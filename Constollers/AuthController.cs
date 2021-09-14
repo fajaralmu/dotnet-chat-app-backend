@@ -5,6 +5,8 @@ using ChatAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ChatAPI.Dto;
+using System;
+using ChatAPI.Helper;
 
 namespace ChatAPI.Constollers
 {
@@ -18,11 +20,20 @@ namespace ChatAPI.Constollers
             _userService = userService;
         }
         
-        [HttpPost]
-        [Route("login")]
+        [HttpPost, Route("login")]
         public ActionResult<WebResponse<User>> Login([FromForm] IFormCollection value)
         {
-            return CommonJson(_userService.Login(value));
+            User result = _userService.Login(value);
+            Response.Headers.Add("access-token", result.Token);
+            return CommonJson(result);
+        }
+
+        [Authorize]
+        [HttpGet, Route("profile")]
+        public ActionResult<WebResponse<User>> Profile()
+        {
+            User user = (User) HttpContext.Items["User"];
+            return CommonJson(user);
         }
     }
 }

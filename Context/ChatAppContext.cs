@@ -1,16 +1,21 @@
 using System;
-using System.Linq;
 using ChatAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ChatAPI.Context
 {
-    public class BaseContext<T> : DbContext where T : BaseModel
+    public class ChatAppContext: DbContext
     {
-        public BaseContext(DbContextOptions options) : base(options)
+        public ChatAppContext(DbContextOptions<ChatAppContext> options) : base(options)
         {
 
         }
+
+        public DbSet<User> Users {get;set;}
+        public DbSet<ChatMessage> ChatMessages {get;set;}
+        public DbSet<ChatRoom> ChatRooms {get;set;}
+        public DbSet<ApplicationProfile> ApplicationProfiles {get;set;}
         public override int SaveChanges()
         {
             var entries = ChangeTracker
@@ -32,4 +37,5 @@ namespace ChatAPI.Context
             return base.SaveChanges();
         }
     }
+
 }
