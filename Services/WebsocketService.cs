@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
-using ChatAPI.Middlewares;
+using ChatAPI.Controllers;
 
 namespace ChatAPI.Services
 {
@@ -25,14 +25,13 @@ namespace ChatAPI.Services
 
         public void SendToAll(string topic, object message)
         { 
-            Console.WriteLine($"SendTo `{topic}`: "+message);
+            Console.WriteLine($"Send topic `{topic}`: "+message);
             foreach (WebSocketHandler handler in  _socketConnections)
             {
                 if (handler.HasTopic(topic) == false) 
                     continue;
-                Console.WriteLine($"SendTo {handler.ID} :"+message);
                  
-                handler.SendMessage(topic, message.ToString());
+                handler.SendMessage(topic, message);
                 
             }
         }

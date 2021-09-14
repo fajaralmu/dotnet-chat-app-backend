@@ -2,7 +2,6 @@ using System;
 using System.Net;
 using System.Net.WebSockets; 
 using System.Threading.Tasks;
-using ChatAPI.Middlewares;
 using ChatAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,15 +18,16 @@ namespace ChatAPI.Constollers
             _websocketService = websocketService;
         }
         [HttpGet("/ws")]
-        public async Task Get()
+        public async Task Get([FromQuery(Name = "topics")] string topics)
         {
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
-                using WebSocket webSocket = await
-                                   HttpContext.WebSockets.AcceptWebSocketAsync();
-                WebSocketHandler handler = new WebSocketHandler(webSocket, id);
-                _websocketService.AddConnection(handler);
-                await handler.Echo();
+                //using WebSocket webSocket = await
+                //                   HttpContext.WebSockets.AcceptWebSocketAsync();
+                //var handler = new ChatAPI.Controllers.WebSocketHandler(webSocket, id);
+                //handler.SetTopic(topics.Split(","));
+                //_websocketService.AddConnection(handler);
+                //await handler.Echo();
             }
             else
             {
