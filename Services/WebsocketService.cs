@@ -12,15 +12,17 @@ namespace ChatAPI.Services
 
         public void AddConnection(WebSocketHandler handler)
         {
-            Console.WriteLine("+++++++= Add WS connection "+handler.ID);
+            Console.WriteLine("+++++++++ Add WS connection "+handler.ID);
             _socketConnections.Add(handler);
 
-            Console.WriteLine("_socketConnections count: "+_socketConnections.Count);
+            Console.WriteLine("Connections count: "+_socketConnections.Count);
         }
         public void RemoveConnection(WebSocketHandler handler)
         {
-            Console.WriteLine("---------- Remove WS connection "+handler.ID);
+            Console.WriteLine("--------- Remove WS connection "+handler.ID);
             _socketConnections.Remove(handler);
+
+            Console.WriteLine("Connections count: "+_socketConnections.Count);
         }
 
         public void SendToAll(string topic, object message)

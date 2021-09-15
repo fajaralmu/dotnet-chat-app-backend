@@ -6,16 +6,16 @@ using ChatAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ChatAPI.Constollers
+namespace ChatAPI.Controllers
 {
     public class WebSocketController :ControllerBase
     {
         private WebsocketService _websocketService;
         
-        int id = new Random().Next(100);
+        readonly int _id;
         public WebSocketController(WebsocketService websocketService){
-            Console.WriteLine("WebSocketController ======= "+id);
             _websocketService = websocketService;
+            _id = 1000 + new Random().Next(999);
         }
         [HttpGet("/ws")]
         public async Task Get([FromQuery(Name = "topics")] string topics)
@@ -24,9 +24,11 @@ namespace ChatAPI.Constollers
             {
                 using WebSocket webSocket = await
                                   HttpContext.WebSockets.AcceptWebSocketAsync();
-                var handler = new ChatAPI.Controllers.WebSocketHandler(webSocket, id);
+                
+                WebSocketHandler handler = new WebSocketHandler(webSocket, _id, _websocketService);
                 handler.SetTopic(topics.Split(","));
                 _websocketService.AddConnection(handler);
+
                 await handler.Echo();
             }
             else

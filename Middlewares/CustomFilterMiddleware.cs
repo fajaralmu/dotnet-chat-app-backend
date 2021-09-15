@@ -18,7 +18,7 @@ namespace ChatAPI.Middlewares
 
         public async Task Invoke(HttpContext context /* other dependencies */)
         {
-            Console.WriteLine($"{context.Request.Method} : {context.Request.Path}");
+            Console.WriteLine($"{context.Request.Method} : {context.Request.Path}{context.Request.QueryString}");
 
             PopulateResponseForCors(context.Response);
             
