@@ -14,15 +14,11 @@ namespace ChatAPI.Controllers
         private readonly WebSocket _webSocket;
         private string[] topics = { };
         public readonly int ID;
-        private readonly WebsocketService _websocketManager;
-
-
-        public WebSocketHandler(WebSocket webSocket, int id, WebsocketService manager)
+        public WebSocketHandler(WebSocket webSocket, int id)
         {
 
             ID = id;
             _webSocket = webSocket;
-            _websocketManager = manager;
         }
 
         public void SetTopic(string[] topics)
@@ -44,7 +40,6 @@ namespace ChatAPI.Controllers
                 var str = System.Text.Encoding.Default.GetString(buffer);
 
             }
-            _websocketManager.RemoveConnection(this);
             await _webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
         }
 
@@ -60,7 +55,16 @@ namespace ChatAPI.Controllers
 
         public void SendMessage(string topic, object message)
         {
-            Console.WriteLine(ID + " >> Send to topic: " + topic);
+            _webSocket.SendAsync(
+                GetPayload(topic, message), 
+                WebSocketMessageType.Text, 
+                true, 
+                CancellationToken.None);
+        }
+
+        private ArraySegment<byte> GetPayload(string topic, object message)
+        {
+             Console.WriteLine(ID + " >> Send to topic: " + topic);
             WebSocketMessage<object> payload = new WebSocketMessage<object>();
             payload.topic = topic;
             payload.data = message is string ? message.ToString() : (message);
@@ -70,8 +74,7 @@ namespace ChatAPI.Controllers
             };
             string jsonString = JsonSerializer.Serialize(payload, options);
             var bytes = Encoding.Default.GetBytes(jsonString);
-            var arraySegment = new ArraySegment<byte>(bytes);
-            _webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
+            return new ArraySegment<byte>(bytes);
         }
     }
 }

@@ -18,6 +18,7 @@ namespace ChatAPI.Controllers
             _id = 1000 + new Random().Next(999);
         }
         [HttpGet("/ws")]
+        [ProducesResponseType((int) HttpStatusCode.SwitchingProtocols)]
         public async Task Get([FromQuery(Name = "topics")] string topics)
         {
             if (HttpContext.WebSockets.IsWebSocketRequest)
@@ -25,11 +26,13 @@ namespace ChatAPI.Controllers
                 using WebSocket webSocket = await
                                   HttpContext.WebSockets.AcceptWebSocketAsync();
                 
-                WebSocketHandler handler = new WebSocketHandler(webSocket, _id, _websocketService);
+                WebSocketHandler handler = new WebSocketHandler(webSocket, _id);
                 handler.SetTopic(topics.Split(","));
                 _websocketService.AddConnection(handler);
 
                 await handler.Echo();
+
+                _websocketService.RemoveConnection(handler);
             }
             else
             {

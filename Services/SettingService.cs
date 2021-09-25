@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using ChatAPI.Context;
 using ChatAPI.Models;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -9,9 +10,10 @@ namespace ChatAPI.Services
 {
     public class SettingService:BaseMasterDataService<ApplicationProfile>
     {
-        public SettingService(ChatAppContext context) : base(context)
+        private readonly IHubContext<ChatHub> _chatHub;
+        public SettingService(ChatAppContext context, IHubContext<ChatHub> chatHubContext) : base(context)
         {
-
+            _chatHub = chatHubContext;
         }
 
         private static readonly Random _random = new Random();

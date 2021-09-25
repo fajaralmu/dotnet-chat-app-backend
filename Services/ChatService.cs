@@ -5,6 +5,7 @@ using ChatAPI.Context;
 using ChatAPI.Dto;
 using ChatAPI.Helper;
 using ChatAPI.Models;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatAPI.Services
@@ -12,9 +13,15 @@ namespace ChatAPI.Services
     public class ChatService : BaseMasterDataService<ChatMessage>
     {
         WebsocketService _websocketService;
-        public ChatService(ChatAppContext context, WebsocketService websocketService) : base(context)
+        private readonly IHubContext<ChatHub> _chatHub;
+        public ChatService(
+            ChatAppContext context, 
+            WebsocketService websocketService,
+            IHubContext<ChatHub> chatHub
+            ) : base(context)
         {
             _websocketService = websocketService;
+            _chatHub = chatHub;
         }
 
         public ChatMessage SendDirectChat(ChatMessageDto messageDto, User user)
@@ -34,6 +41,9 @@ namespace ChatAPI.Services
                 ToUser = toUser,
                 Body = messageDto.Body
             };
+            Console.WriteLine("====== will send websocket =======");
+            
+            _chatHub.Clients.All.SendAsync("ReceiveMessage", toUser.Email, message);
             _websocketService.SendToAll("chat/"+toUser.ID, message);
             return Add(message);
         }
@@ -93,5 +103,7 @@ namespace ChatAPI.Services
         }
 
         protected override DbSet<ChatMessage> Items => _context.ChatMessages;
+
+        public IHubContext<ChatHub> ChatHub => _chatHub;
     }
 }
