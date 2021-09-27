@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ChatAPI.Dto;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 
 namespace ChatAPI.Middlewares
@@ -19,7 +21,7 @@ namespace ChatAPI.Middlewares
         public async Task Invoke(HttpContext context /* other dependencies */)
         {
             Console.WriteLine($"{context.Request.Method} : {context.Request.Path}{context.Request.QueryString}");
-
+            LogHeaders(context);
             PopulateResponseForCors(context.Response);
             
             if (!context.Request.Method.ToLower().Equals("options"))
@@ -27,8 +29,17 @@ namespace ChatAPI.Middlewares
                 await next(context);
             }
 
-            Console.WriteLine("ResponseCode:" + context.Response.StatusCode);
+            Console.WriteLine("================ COMPLETED:" + context.Response.StatusCode);
 
+        }
+
+        private void LogHeaders(HttpContext context)
+        {
+            Console.WriteLine("========= HEADERS =========");
+            foreach(KeyValuePair<string, StringValues> header in context.Request.Headers)
+            {
+                Console.WriteLine($"{ header.Key } : { header.Value }");
+            }
         }
 
         public static void PopulateResponseForCors(HttpResponse response)

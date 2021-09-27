@@ -32,6 +32,11 @@ namespace ChatAPI.Controllers
             User user = (User)HttpContext.Items["User"];
             return CommonJson(user);
         }
+        [HttpPut, Route("api/user/profile")]
+        public ActionResult<WebResponse<User>> UpdateProfile(UserProfileDto profileDto)
+        {
+            return CommonJson(_userService.UpdateProfile(profileDto, GetLoggedUser()));
+        }
 
     }
 }

@@ -13,6 +13,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using ChatAPI.Dto;
 
 namespace ChatAPI.Services
 {
@@ -43,6 +44,22 @@ namespace ChatAPI.Services
             Add(user);
 
             user.Password = null;
+            return user;
+        }
+
+        internal User UpdateProfile(UserProfileDto profileDto, User user)
+        {
+            if (profileDto.Email != null) {
+                user.Email = profileDto.Email;
+            }
+            if (profileDto.Name != null) {
+                user.Name = profileDto.Name;
+            }
+            if (profileDto.Password != null) {
+                user.Password = HashPassword(profileDto.Password);
+            }
+            Items.Update(user);
+            _context.SaveChanges();
             return user;
         }
 

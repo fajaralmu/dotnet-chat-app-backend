@@ -15,13 +15,12 @@ namespace ChatAPI.Controllers
         private readonly WebSocket _webSocket;
         private string[] topics = { };
         public readonly int ID;
-        private readonly WebsocketService _websocketManager;
         static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
 
-        public WebSocketHandler(WebSocket webSocket, int id, WebsocketService manager)
+        public WebSocketHandler(WebSocket webSocket, int id)
         {
 
             ID = id;
