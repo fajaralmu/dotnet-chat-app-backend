@@ -12,6 +12,7 @@ namespace ChatAPI.Constollers
     public class ErrorController : BaseController
     {
         [Route("/error")]
+        [HttpGet, HttpPost, HttpPut, HttpOptions, HttpDelete]
         public IActionResult ErrorLocalDevelopment(
             [FromServices] IWebHostEnvironment webHostEnvironment)
         {

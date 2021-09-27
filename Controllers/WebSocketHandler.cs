@@ -26,7 +26,6 @@ namespace ChatAPI.Controllers
 
             ID = id;
             _webSocket = webSocket;
-            _websocketManager = manager;
         }
 
         public void SetTopic(string[] topics) => this.topics = topics;
@@ -43,7 +42,6 @@ namespace ChatAPI.Controllers
                 result = await _webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 PrintReceivedMessage(buffer);
             }
-            _websocketManager.RemoveConnection(this);
             await _webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
         }
 
