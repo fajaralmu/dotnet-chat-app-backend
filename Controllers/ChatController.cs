@@ -60,9 +60,9 @@ namespace ChatAPI.Controllers
             return CommonJson(_chatService.Delete(id, GetLoggedUser()));
         }
         [HttpGet, Route("api/chat/partners")]
-        public ActionResult<WebResponse<List<User>>> GetPartners()
+        public ActionResult<WebResponse<List<User>>> GetPartners([FromQuery(Name = "name")] string name = null)
         {
-            return CommonJson(_chatService.GetPartners(GetLoggedUser()));
+            return CommonJson(_chatService.GetPartners(GetLoggedUser(), name));
         }
 
     }

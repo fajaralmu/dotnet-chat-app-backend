@@ -47,6 +47,11 @@ namespace ChatAPI.Services
             return user;
         }
 
+        internal List<User> GetByNameLike(User loggedUser, string name)
+        {
+            return Items.Where(u => u.ID != loggedUser.ID && u.Name.ToLower().Contains(name.ToLower())).ToList();
+        }
+
         internal User UpdateProfile(UserProfileDto profileDto, User user)
         {
             if (profileDto.Email != null) {

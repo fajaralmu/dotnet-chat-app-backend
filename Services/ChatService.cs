@@ -13,15 +13,18 @@ namespace ChatAPI.Services
     public class ChatService : BaseMasterDataService<ChatMessage>
     {
         WebsocketService _websocketService;
+        UserService _userService;
         private readonly IHubContext<ChatHub> _chatHub;
         public ChatService(
             ChatAppContext context, 
             WebsocketService websocketService,
-            IHubContext<ChatHub> chatHub
+            IHubContext<ChatHub> chatHub,
+            UserService userService
             ) : base(context)
         {
-            _websocketService = websocketService;
-            _chatHub = chatHub;
+            _websocketService   = websocketService;
+            _userService        = userService;
+            _chatHub            = chatHub;
         }
 
         public ChatMessage SendDirectChat(ChatMessageDto messageDto, User user)
@@ -39,11 +42,13 @@ namespace ChatAPI.Services
             {
                 FromUser = user,
                 ToUser = toUser,
-                Body = messageDto.Body
+                Body = messageDto.Body,
+                FromUserID = user.ID,
             };
             Console.WriteLine("====== will send websocket =======");
             
-            _chatHub.Clients.All.SendAsync("ReceiveMessage", toUser.Email, message);
+            _chatHub.Clients.All.SendAsync("ReceiveMessage", toUser.Email, 
+                WebResponse<ChatMessage>.SuccessResponse(message));
             _websocketService.SendToAll("chat/"+toUser.ID, message);
             return Add(message);
         }
@@ -86,10 +91,13 @@ namespace ChatAPI.Services
             return base.Delete(id, chat => chat.FromUserID == user.ID);
         }
 
-        internal List<User> GetPartners(User user)
+        internal List<User> GetPartners(User user, string searchName = null)
         {
             List<User> result = Items
-                        .Where(chat => (chat.ToUserID == user.ID || chat.FromUserID == user.ID) && chat.Room == null )
+                        .Where(chat => 
+                            (chat.ToUserID == user.ID || chat.FromUserID == user.ID) && chat.Room == null ||
+                            (searchName == null ? false : chat.ToUser.Name.ToLower().Contains(searchName.ToLower()))
+                            )
                         .Select(chat => (chat.FromUserID == user.ID)? chat.ToUser: chat.FromUser )
                         .AsEnumerable<User>() //<== SQL to DB is executed
                         .Distinct(
@@ -99,7 +107,22 @@ namespace ChatAPI.Services
                             )
                         )
                         .ToList();
+
+            if (null != searchName) {
+                List<User> users = _userService.GetByNameLike(user, searchName);
+                result.AddRange(users);
+                return result.Distinct().ToList();
+            }
             return result;
+        }
+
+        private bool ChatPartnerFilter(ChatMessage chat, User user, string name = null)
+        {
+            bool hasChatHistoryWithUser = (chat.ToUserID == user.ID || chat.FromUserID == user.ID) && chat.Room == null;
+            if (name != null) {
+                return hasChatHistoryWithUser && chat.FromUser.Name.ToLower().Contains(name.ToLower());
+            }
+            return hasChatHistoryWithUser;
         }
 
         protected override DbSet<ChatMessage> Items => _context.ChatMessages;

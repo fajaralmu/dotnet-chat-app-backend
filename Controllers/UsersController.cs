@@ -27,11 +27,12 @@ namespace ChatAPI.Controllers
         }
 
         [HttpGet, Route("api/user/profile")]
-        public ActionResult<WebResponse<User>> Profile()
+        public ActionResult<WebResponse<User>> GetProfile()
         {
             User user = (User)HttpContext.Items["User"];
             return CommonJson(user);
         }
+        
         [HttpPut, Route("api/user/profile")]
         public ActionResult<WebResponse<User>> UpdateProfile(UserProfileDto profileDto)
         {

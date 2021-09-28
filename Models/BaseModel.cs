@@ -10,8 +10,8 @@ namespace ChatAPI.Models
         [Key, Column("id")]
         public int ID { get; set; }
         [Column("created_date")]
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
         [Column("updated_date")]
-        public DateTime UpdatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; } = DateTime.Now;
     }
 }
