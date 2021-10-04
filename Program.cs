@@ -13,7 +13,7 @@ namespace ChatAPI
     {
         public static void Main(string[] args)
         {
-           CreateHostBuilder(args).Build().Run();
+           CreateHostBuilder(null).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -21,6 +21,7 @@ namespace ChatAPI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://172.30.32.1:5000", "http://localhost:5000");
                 });
     }
 }
